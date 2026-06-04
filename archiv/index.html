@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> أرشيف الروابط </title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js">
+    </script>
+    <style>
+        :root {
+            --bg: #f0f2f5;
+            --surface: #ffffff;
+            --surface2: #f8f9fa;
+            --text: #1a1a2e;
+            --text2: #555;
+            --border: #e0e0e0;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 4px 24px rgba(0, 0, 0, 0.08), 0 12px 40px rgba(0, 0, 0, 0.04);
+            --accent: #6c5ce7;
+            --accent2: #a29bfe;
+            --accent-light: #ede7ff;
+            --gradient: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 50%, #fd79a8 100%);
+            --radius: 18px;
+            --radius-sm: 10px;
+            --radius-xs: 8px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --danger: #e74c3c;
+            --success: #27ae60;
+            --warning: #f39c12;
+        }
+        [data-theme="dark"] {
+            --bg: #0f0f1a;
+            --surface: #1a1a2e;
+            --surface2: #222240;
+            --text: #e8e8f0;
+            --text2: #b0b0c0;
+            --border: #2a2a45;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 6px 16px rgba(0, 0, 0, 0.25);
+            --shadow-lg: 0 4px 24px rgba(0, 0, 0, 0.4), 0 12px 40px rgba(0, 0, 0, 0.3);
+            --accent-light: #2a1f50;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', 'Tajawal', 'Cairo', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            transition: background var(--transition), color var(--transition);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+        .bg-decoration {
+            position: fixed;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.4;
+            border-radius: 50%;
+            filter: blur(120px);
+            transition: opacity var(--transition);
+        }
+        .bg-decoration:nth-child(1) {
+            width: 500px;
+            height: 500px;
+            background: var(--accent2);
+            top: -150px;
+            left: -150px;
+            opacity: 0.25;
+        }
+        .bg-decoration:nth-child(2) {
+            width: 400px;
+            height: 400px;
+            background: #fd79a8;
+            bottom: -100px;
+            right: -100px;
+            opacity: 0.2;
+        }
+        .bg-decoration:nth-child(3) {
+            width: 300px;
+            height: 300px;
+            background: #00cec9;
+            top: 50%;
+            left: 40%;
+            opacity: 0.15;
+            filter: blur(100px);
+        }
+        [data-theme="dark"] .bg-decoration {
+            opacity: 0.2;
+        }
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px 24px;
+            position: relative;
+            z-index: 1;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            padding: 20px 28px;
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+            transition: all var(--transition);
+            position: sticky;
+            top: 16px;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .header-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);
+            flex-shrink: 0;
+        }
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header-subtitle {
+            font-size: 0.8rem;
+            color: var(--text2);
+            font-weight: 500;
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 10px 18px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: inherit;
+            white-space: nowrap;
+            letter-spacing: -0.2px;
+            position: relative;
+            overflow: hidden;
+            background: var(--surface2);
+            color: var(--text);
+            border: 2px solid var(--border);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background: var(--gradient);
+            color: #fff;
+            border: none;
+            box-shadow: 0 4px 18px rgba(108, 92, 231, 0.35);
+        }
+        .btn-primary:hover {
+            box-shadow: 0 6px 25px rgba(108, 92, 231, 0.5);
+        }
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.78rem;
+            border-radius: 30px;
+        }
+        .theme-toggle {
+            width: 48px;
+            height: 28px;
+            border-radius: 50px;
+            background: var(--border);
+            cursor: pointer;
+            position: relative;
+            transition: all var(--transition);
+            border: 2px solid transparent;
+            flex-shrink: 0;
+        }
+        .theme-toggle .toggle-ball {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #fff;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 2px;
+            transition: all var(--transition);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        [data-theme="dark"] .theme-toggle {
+            background: #444;
+        }
+        [data-theme="dark"] .theme-toggle .toggle-ball {
+            left: calc(100% - 24px);
+            background: #1a1a2e;
+        }
+        .stats-bar {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            flex: 1;
+            min-width: 130px;
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: all var(--transition);
+            text-align: center;
+            cursor: default;
+        }
+        .stat-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text2);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .search-container {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .search-input {
+            width: 100%;
+            padding: 14px 20px 14px 50px;
+            border-radius: 50px;
+            border: 2px solid var(--input-border, var(--border));
+            background: var(--surface);
+            color: var(--text);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all var(--transition);
+            box-shadow: var(--shadow);
+            outline: none;
+        }
+        .search-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.1);
+        }
+        .search-icon {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            color: var(--text2);
+            pointer-events: none;
+        }
+        .category-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            padding: 4px;
+            background: var(--surface);
+            border-radius: 50px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .category-tabs::-webkit-scrollbar {
+            display: none;
+        }
+        .cat-tab {
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all var(--transition);
+            background: transparent;
+            color: var(--text2);
+            white-space: nowrap;
+            font-family: inherit;
+            position: relative;
+        }
+        .cat-tab:hover {
+            color: var(--accent);
+            background: var(--accent-light);
+        }
+        .cat-tab.active {
+            background: var(--gradient);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(108, 92, 231, 0.4);
+        }
+        .cat-tab .cat-count {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            margin-right: 4px;
+            font-weight: 700;
+        }
+        .cat-tab.active .cat-count {
+            background: rgba(255, 255, 255, 0.35);
+        }
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 16px;
+        }
+        .links-grid.list-view {
+            grid-template-columns: 1fr;
+        }
+        @media (max-width: 768px) {
+            .links-grid {
+                grid-template-columns: 1fr;
+            }
+            .header {
+                padding: 14px 16px;
+            }
+            .header-title {
+                font-size: 1.2rem;
+            }
+            .app-container {
+                padding: 10px 12px;
+            }
+        }
+        .link-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 20px 22px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: all var(--transition);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: relative;
+            cursor: pointer;
+            animation: fadeInUp 0.4s ease forwards;
+        }
+        .link-card.pinned {
+            border-right: 5px solid var(--accent);
+        }
+        .link-card.expired {
+            opacity: 0.7;
+            border-color: var(--warning);
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .link-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+            border-color: var(--accent2);
+            background: var(--card-hover, #ffffff);
+        }
+        [data-theme="dark"] .link-card:hover {
+            background: #202038;
+        }
+        .link-card .fav-icon {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        .link-card .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin: 2px;
+        }
+        .badge-gaming {
+            background: #ffe0e0;
+            color: #c0392b;
+        }
+        .badge-study {
+            background: #d5f5e3;
+            color: #1e7e34;
+        }
+        .badge-ai {
+            background: #e8daef;
+            color: #6c3483;
+        }
+        .badge-mods {
+            background: #d6eaf8;
+            color: #1a5276;
+        }
+        .badge-other {
+            background: #fdebd0;
+            color: #b9770e;
+        }
+        [data-theme="dark"] .badge-gaming {
+            background: #3d1a1a;
+            color: #ff7675;
+        }
+        [data-theme="dark"] .badge-study {
+            background: #1a3d2a;
+            color: #55efc4;
+        }
+        [data-theme="dark"] .badge-ai {
+            background: #2a1a3d;
+            color: #c39bff;
+        }
+        [data-theme="dark"] .badge-mods {
+            background: #1a2a3d;
+            color: #74b9ff;
+        }
+        [data-theme="dark"] .badge-other {
+            background: #3d2a1a;
+            color: #fdcb6e;
+        }
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.25s ease;
+            backdrop-filter: blur(4px);
+            padding: 20px;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .modal {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 28px;
+            width: 100%;
+            max-width: 560px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            animation: slideUp 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .modal h3 {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            text-align: center;
+        }
+        .modal .form-group {
+            margin-bottom: 16px;
+        }
+        .modal label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+        .modal input,
+        .modal select,
+        .modal textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: var(--radius-xs);
+            border: 2px solid var(--border);
+            background: var(--surface2);
+            color: var(--text);
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all var(--transition);
+            outline: none;
+        }
+        .modal input:focus,
+        .modal select:focus,
+        .modal textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.08);
+        }
+        .modal .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .close-modal-btn {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text2);
+            z-index: 10;
+        }
+        .close-modal-btn:hover {
+            color: var(--danger);
+        }
+        .hidden {
+            display: none !important;
+        }
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 300;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            pointer-events: none;
+        }
+        .toast {
+            padding: 12px 24px;
+            border-radius: 50px;
+            color: #fff;
+            font-weight: 600;
+            animation: toastIn 0.4s ease;
+            pointer-events: auto;
+        }
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .accent-picker {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .color-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.2s;
+        }
+        .color-option.selected {
+            border-color: var(--text);
+        }
+        .view-toggle {
+            display: flex;
+            gap: 8px;
+        }
+        .bulk-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .custom-icon-preview {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid var(--border);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-decoration"></div>
+    <div class="bg-decoration"></div>
+    <div class="bg-decoration"></div>
+
+    <div class="app-container">
+        <header class="header">
+            <div class="header-brand">
+                <div class="header-logo"></div>
+                <div>
+                    <div class="header-title">LinkVault Pro Max</div>
+                    <div class="header-subtitle">أرشيف احترافي بـ 20+ ميزة</div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="openAddModal()">➕ إضافة</button>
+                <button class="btn" onclick="openManageCategoriesModal()">⚙️ التصنيفات</button>
+                <button class="btn btn-sm" onclick="exportData()">📥 تصدير</button>
+                <button class="btn btn-sm" onclick="importDataPrompt()">📤 استيراد</button>
+                <button class="btn btn-sm" onclick="document.getElementById('bulkActionsBar').classList.toggle('hidden')">✅ تحديد جماعي</button>
+                <button class="btn btn-sm" onclick="randomLink()">🎲 عشوائي</button>
+                <div class="theme-toggle" onclick="toggleTheme()"><div class="toggle-ball">🌙</div></div>
+            </div>
+        </header>
+
+        <div class="stats-bar" id="statsBar">
+            <div class="stat-card"><div class="stat-number" id="statTotal">0</div><div class="stat-label">📎 الكل</div></div>
+            <div class="stat-card"><div class="stat-number" id="statFav">0</div><div class="stat-label">⭐ مفضلة</div></div>
+            <div class="stat-card"><div class="stat-number" id="statTrash">0</div><div class="stat-label">🗑️ محذوفات</div></div>
+            <div class="stat-card"><div class="stat-number" id="statExpired">0</div><div class="stat-label">⏰ منتهية</div></div>
+        </div>
+
+        <div class="search-container">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" id="searchInput" placeholder="ابحث... (Ctrl+K)">
+        </div>
+
+        <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:15px;">
+            <div class="view-toggle">
+                <button class="btn btn-sm" onclick="setView('grid')" id="viewGridBtn">📱 شبكي</button>
+                <button class="btn btn-sm" onclick="setView('list')" id="viewListBtn">📋 قائمة</button>
+            </div>
+            <select id="sortSelect" class="btn btn-sm" onchange="setSort(this.value)">
+                <option value="newest">🕒 الأحدث</option>
+                <option value="oldest">🕒 الأقدم</option>
+                <option value="nameAsc">🔤 الاسم أ-ي</option>
+                <option value="nameDesc">🔤 الاسم ي-أ</option>
+                <option value="mostVisited">👁️ الأكثر زيارة</option>
+                <option value="expiry">⏰ تاريخ الانتهاء</option>
+            </select>
+            <button class="btn btn-sm" onclick="openAccentPicker()">🎨 تخصيص اللون</button>
+            <button class="btn btn-sm" onclick="checkAllLinksValidity()">🔍 فحص الروابط</button>
+        </div>
+
+        <div class="category-tabs" id="categoryTabs"></div>
+
+        <div class="bulk-actions hidden" id="bulkActionsBar">
+            <span>تم تحديد <span id="selectedCount">0</span> رابط</span>
+            <button class="btn btn-sm btn-primary" onclick="bulkMoveCategory()">📂 نقل لتصنيف</button>
+            <button class="btn btn-sm" style="background:var(--danger);color:#fff;" onclick="bulkDelete()">🗑️ حذف المحدد</button>
+            <button class="btn btn-sm" onclick="cancelBulk()">إلغاء</button>
+        </div>
+
+        <div class="links-grid" id="linksGrid"></div>
+    </div>
+
+    <!-- مودال إضافة / تعديل -->
+    <div class="modal-overlay hidden" id="linkModalOverlay">
+        <div class="modal">
+            <button class="close-modal-btn" onclick="closeModal('linkModalOverlay')">✕</button>
+            <h3 id="linkModalTitle">➕ إضافة رابط</h3>
+            <div class="form-group"><label>📝 الاسم</label><input type="text" id="linkName"></div>
+            <div class="form-group"><label>🔗 الرابط</label><input type="url" id="linkUrl"></div>
+            <div class="form-group"><label>📂 التصنيف</label><select id="linkCategory"></select></div>
+            <div class="form-group"><label>🏷️ وسوم (مفصولة بفاصلة)</label><input type="text" id="linkTags" placeholder="مثال: مهم, تقني"></div>
+            <div class="form-group"><label>📝 ملاحظات</label><textarea id="linkNotes" rows="2"></textarea></div>
+            <div class="form-group"><label>⏰ تاريخ الانتهاء (اختياري)</label><input type="date" id="linkExpiry"></div>
+            <div class="form-group">
+                <label>🖼️ أيقونة مخصصة</label>
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <input type="file" id="linkIconFile" accept="image/*" onchange="previewCustomIcon()" style="display:none;">
+                    <button type="button" class="btn btn-sm" onclick="document.getElementById('linkIconFile').click()">📁 اختر صورة</button>
+                    <img id="iconPreview" class="custom-icon-preview hidden" src="#" alt="معاينة">
+                    <button type="button" class="btn btn-sm" id="removeIconBtn" onclick="removeCustomIcon()" style="display:none;">🗑️ إزالة</button>
+                </div>
+            </div>
+            <input type="hidden" id="linkEditId">
+            <input type="hidden" id="linkCustomIconData">
+            <div class="form-actions">
+                <button class="btn" onclick="closeModal('linkModalOverlay')">إلغاء</button>
+                <button class="btn btn-primary" onclick="saveLink()">💾 حفظ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال التصنيفات -->
+    <div class="modal-overlay hidden" id="categoriesModalOverlay">
+        <div class="modal">
+            <button class="close-modal-btn" onclick="closeModal('categoriesModalOverlay')">✕</button>
+            <h3>⚙️ إدارة التصنيفات</h3>
+            <div class="form-group">
+                <label>➕ تصنيف جديد</label>
+                <div style="display:flex;gap:8px;"><input type="text" id="newCategoryName"><button class="btn btn-primary btn-sm" onclick="addCustomCategory()">إضافة</button></div>
+            </div>
+            <div id="categoriesList" style="max-height:250px;overflow-y:auto;"></div>
+        </div>
+    </div>
+
+    <!-- مودال الألوان -->
+    <div class="modal-overlay hidden" id="accentModal">
+        <div class="modal">
+            <button class="close-modal-btn" onclick="closeModal('accentModal')">✕</button>
+            <h3>🎨 اختر لون التمييز</h3>
+            <div class="accent-picker" id="accentPicker"></div>
+            <button class="btn btn-primary" style="margin-top:15px;" onclick="resetAccent()">🔄 الافتراضي</button>
+        </div>
+    </div>
+
+    <!-- مودال QR -->
+    <div class="modal-overlay hidden" id="qrModal">
+        <div class="modal">
+            <button class="close-modal-btn" onclick="closeModal('qrModal')">✕</button>
+            <h3>📱 رمز QR</h3>
+            <div id="qrcode" style="display:flex;justify-content:center;margin:20px;"></div>
+            <p id="qrLinkText" style="text-align:center;word-break:break-all;"></p>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        (function() {
+            const STORAGE_KEY = 'linkvault_data_v2';
+            let data = {
+                links: [],
+                categories: ['🎮 قيمنج', '📚 دراسة', '🤖 أدوات AI', '🎯 مودات قيمنج'],
+                theme: 'light',
+                accent: '#6c5ce7',
+                view: 'grid',
+                sort: 'newest',
+                trash: []
+            };
+            let currentFilter = 'all', searchQuery = '', selectedLinks = new Set();
+
+            function loadData() {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) try { Object.assign(data, JSON.parse(saved)); } catch (e) {}
+                if (!data.categories.length) data.categories = ['🎮 قيمنج', '📚 دراسة', '🤖 أدوات AI', '🎯 مودات قيمنج'];
+            }
+
+            function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+
+            function applyTheme(t) {
+                document.documentElement.setAttribute('data-theme', t);
+                document.querySelector('.toggle-ball').textContent = t === 'dark' ? '☀️' : '🌙';
+            }
+
+            function applyAccent(c) {
+                document.documentElement.style.setProperty('--accent', c);
+                document.documentElement.style.setProperty('--accent2', c + 'cc');
+            }
+
+            window.toggleTheme = () => { data.theme = data.theme === 'dark' ? 'light' : 'dark'; applyTheme(data.theme); saveData(); };
+            window.setView = (v) => { data.view = v; saveData(); renderAll(); };
+            window.setSort = (v) => { data.sort = v; saveData(); renderAll(); };
+
+            function getFilteredLinks() {
+                let arr = [...data.links];
+                if (currentFilter === 'favorites') arr = arr.filter(l => l.favorite);
+                else if (currentFilter === 'trash') arr = [...data.trash];
+                else if (currentFilter !== 'all') arr = arr.filter(l => l.category === currentFilter);
+                if (searchQuery) {
+                    const q = searchQuery.toLowerCase();
+                    arr = arr.filter(l => l.name.toLowerCase().includes(q) || l.url.toLowerCase().includes(q) || (l.tags && l.tags.some(t => t.toLowerCase().includes(q))));
+                }
+                if (data.sort === 'newest') arr.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                else if (data.sort === 'oldest') arr.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+                else if (data.sort === 'nameAsc') arr.sort((a, b) => a.name.localeCompare(b.name, 'ar'));
+                else if (data.sort === 'nameDesc') arr.sort((a, b) => b.name.localeCompare(a.name, 'ar'));
+                else if (data.sort === 'mostVisited') arr.sort((a, b) => (b.visits || 0) - (a.visits || 0));
+                else if (data.sort === 'expiry') arr.sort((a, b) => (a.expiry ? new Date(a.expiry) : new Date('2099')) - (b.expiry ? new Date(b.expiry) : new Date('2099')));
+                return [...arr.filter(l => l.pinned), ...arr.filter(l => !l.pinned)];
+            }
+
+            function renderAll() {
+                document.getElementById('linksGrid').className = 'links-grid' + (data.view === 'list' ? ' list-view' : '');
+                document.getElementById('viewGridBtn').style.background = data.view === 'grid' ? 'var(--accent)' : '';
+                document.getElementById('viewListBtn').style.background = data.view === 'list' ? 'var(--accent)' : '';
+                renderTabs();
+                renderLinks();
+                renderStats();
+                populateCategorySelect();
+            }
+
+            function renderStats() {
+                const total = data.links.length;
+                const fav = data.links.filter(l => l.favorite).length;
+                const trash = data.trash.length;
+                const expired = data.links.filter(l => l.expiry && new Date(l.expiry) < new Date()).length;
+                document.getElementById('statTotal').textContent = total;
+                document.getElementById('statFav').textContent = fav;
+                document.getElementById('statTrash').textContent = trash;
+                document.getElementById('statExpired').textContent = expired;
+            }
+
+            function renderTabs() {
+                const container = document.getElementById('categoryTabs');
+                let html = `<button class="cat-tab ${currentFilter === 'all' ? 'active' : ''}" onclick="setFilter('all')">📋 الكل</button>`;
+                html += `<button class="cat-tab ${currentFilter === 'favorites' ? 'active' : ''}" onclick="setFilter('favorites')">⭐ المفضلة</button>`;
+                data.categories.forEach(c => html += `<button class="cat-tab ${currentFilter === c ? 'active' : ''}" onclick="setFilter('${c}')">${c}</button>`);
+                html += `<button class="cat-tab ${currentFilter === 'trash' ? 'active' : ''}" onclick="setFilter('trash')">🗑️ المحذوفات</button>`;
+                container.innerHTML = html;
+            }
+
+            function renderLinks() {
+                const grid = document.getElementById('linksGrid');
+                const filtered = getFilteredLinks();
+                if (!filtered.length) {
+                    grid.innerHTML = `<div style="text-align:center;padding:40px;">📭 لا توجد روابط</div>`;
+                    return;
+                }
+                grid.innerHTML = filtered.map(link => {
+                    const expired = link.expiry && new Date(link.expiry) < new Date();
+                    const icon = link.customIcon || link.favicon || '';
+                    return `
+                        <div class="link-card ${link.pinned ? 'pinned' : ''} ${expired ? 'expired' : ''}" data-id="${link.id}">
+                            <span class="fav-icon" onclick="event.stopPropagation();toggleFav('${link.id}')">${link.favorite ? '⭐' : '☆'}</span>
+                            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                                <span class="badge ${getBadgeClass(link.category)}">${link.category}</span>
+                                ${(link.tags || []).map(t => `<span class="badge badge-other">#${t}</span>`).join('')}
+                            </div>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                ${icon ? `<img src="${icon}" width="20" height="20" style="border-radius:4px;object-fit:contain;">` : ''}
+                                <span style="font-weight:700;">${escapeHtml(link.name)}</span>
+                            </div>
+                            <div style="font-size:0.8rem;color:var(--text2);">${link.notes || ''}</div>
+                            <a href="${link.url}" target="_blank" onclick="event.stopPropagation(); incrementVisit('${link.id}')" style="color:var(--accent);">${link.url.length > 40 ? link.url.substring(0, 40) + '...' : link.url}</a>
+                            <div style="font-size:0.7rem;color:var(--text2);">👁️ ${link.visits || 0} | 🕒 ${formatDate(link.createdAt)} ${link.expiry ? '| ⏰ ' + link.expiry : ''}</div>
+                            <div class="card-actions" style="display:flex;gap:6px;flex-wrap:wrap;">
+                                <button class="btn btn-sm" onclick="event.stopPropagation();openLink('${link.id}')">🔗 فتح</button>
+                                <button class="btn btn-sm" onclick="event.stopPropagation();copyLink('${link.url}')">📋 نسخ</button>
+                                <button class="btn btn-sm" onclick="event.stopPropagation();openAddModal('${link.id}')">✏️</button>
+                                ${currentFilter === 'trash' ?
+                                    `<button class="btn btn-sm" onclick="event.stopPropagation();restoreLink('${link.id}')">🔄 استعادة</button>` :
+                                    `<button class="btn btn-sm" style="background:var(--danger);color:#fff;" onclick="event.stopPropagation();deleteLink('${link.id}')">🗑️</button>`}
+                                <button class="btn btn-sm" onclick="event.stopPropagation();showQR('${link.url}')">📱</button>
+                                <button class="btn btn-sm" onclick="event.stopPropagation();togglePin('${link.id}')">${link.pinned ? '📌' : '📍'}</button>
+                                <input type="checkbox" style="transform:scale(1.2);" onclick="event.stopPropagation();toggleSelect('${link.id}')" ${selectedLinks.has(link.id) ? 'checked' : ''}>
+                            </div>
+                        </div>`;
+                }).join('');
+            }
+
+            function getBadgeClass(cat) {
+                if (cat.includes('قيمنج') && !cat.includes('مودات')) return 'badge-gaming';
+                if (cat.includes('دراسة')) return 'badge-study';
+                if (cat.includes('AI') || cat.includes('ذكاء')) return 'badge-ai';
+                if (cat.includes('مودات')) return 'badge-mods';
+                return 'badge-other';
+            }
+
+            window.previewCustomIcon = function() {
+                const file = document.getElementById('linkIconFile').files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = e => {
+                        document.getElementById('iconPreview').src = e.target.result;
+                        document.getElementById('iconPreview').classList.remove('hidden');
+                        document.getElementById('removeIconBtn').style.display = 'inline-flex';
+                        document.getElementById('linkCustomIconData').value = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            window.removeCustomIcon = function() {
+                document.getElementById('linkIconFile').value = '';
+                document.getElementById('iconPreview').classList.add('hidden');
+                document.getElementById('removeIconBtn').style.display = 'none';
+                document.getElementById('linkCustomIconData').value = '';
+            };
+
+            window.openAddModal = function(editId = null) {
+                document.getElementById('linkEditId').value = editId || '';
+                document.getElementById('linkModalTitle').textContent = editId ? '✏️ تعديل الرابط' : '➕ إضافة رابط';
+                ['linkName', 'linkUrl', 'linkNotes', 'linkExpiry'].forEach(id => document.getElementById(id).value = '');
+                document.getElementById('linkTags').value = '';
+                document.getElementById('linkCustomIconData').value = '';
+                document.getElementById('linkIconFile').value = '';
+                document.getElementById('iconPreview').classList.add('hidden');
+                document.getElementById('removeIconBtn').style.display = 'none';
+                populateCategorySelect();
+                if (editId) {
+                    const arr = currentFilter === 'trash' ? data.trash : data.links;
+                    const link = arr.find(l => l.id === editId);
+                    if (link) {
+                        document.getElementById('linkName').value = link.name;
+                        document.getElementById('linkUrl').value = link.url;
+                        document.getElementById('linkCategory').value = link.category;
+                        document.getElementById('linkNotes').value = link.notes || '';
+                        document.getElementById('linkTags').value = (link.tags || []).join(',');
+                        document.getElementById('linkExpiry').value = link.expiry || '';
+                        if (link.customIcon) {
+                            document.getElementById('iconPreview').src = link.customIcon;
+                            document.getElementById('iconPreview').classList.remove('hidden');
+                            document.getElementById('removeIconBtn').style.display = 'inline-flex';
+                            document.getElementById('linkCustomIconData').value = link.customIcon;
+                        }
+                    }
+                }
+                document.getElementById('linkModalOverlay').classList.remove('hidden');
+            };
+
+            window.saveLink = function() {
+                const name = document.getElementById('linkName').value.trim();
+                const url = document.getElementById('linkUrl').value.trim();
+                const category = document.getElementById('linkCategory').value;
+                if (!name || !url) return showToast('⚠️ املأ الحقول الأساسية', 'error');
+                const linkData = {
+                    id: document.getElementById('linkEditId').value || 'link_' + Date.now(),
+                    name,
+                    url,
+                    category,
+                    tags: document.getElementById('linkTags').value.split(',').map(t => t.trim()).filter(Boolean),
+                    notes: document.getElementById('linkNotes').value.trim(),
+                    expiry: document.getElementById('linkExpiry').value,
+                    customIcon: document.getElementById('linkCustomIconData').value || null,
+                    favicon: `https://www.google.com/s2/favicons?domain=${new URL(url).hostname}&sz=32`,
+                    visits: 0,
+                    favorite: false,
+                    pinned: false,
+                    createdAt: new Date().toISOString()
+                };
+                const editId = document.getElementById('linkEditId').value;
+                if (editId) {
+                    const arr = currentFilter === 'trash' ? data.trash : data.links;
+                    const idx = arr.findIndex(l => l.id === editId);
+                    if (idx !== -1) {
+                        arr[idx] = { ...arr[idx], ...linkData, id: editId, visits: arr[idx].visits || 0, favorite: arr[idx].favorite, pinned: arr[idx].pinned };
+                    }
+                } else {
+                    data.links.unshift(linkData);
+                }
+                saveData();
+                closeModal('linkModalOverlay');
+                renderAll();
+                showToast('✅ تم الحفظ');
+            };
+
+            window.deleteLink = (id) => {
+                const link = data.links.find(l => l.id === id);
+                if (link) { data.links = data.links.filter(l => l.id !== id); data.trash.push(link); saveData(); renderAll(); showToast('🗑️ نُقل للسلة'); }
+            };
+            window.restoreLink = (id) => {
+                const link = data.trash.find(l => l.id === id);
+                if (link) { data.trash = data.trash.filter(l => l.id !== id); data.links.push(link); saveData(); renderAll(); showToast('🔄 استُعيد'); }
+            };
+            window.toggleFav = (id) => { const link = data.links.find(l => l.id === id); if (link) { link.favorite = !link.favorite; saveData(); renderAll(); } };
+            window.togglePin = (id) => { const link = data.links.find(l => l.id === id); if (link) { link.pinned = !link.pinned; saveData(); renderAll(); } };
+            window.incrementVisit = (id) => { const link = data.links.find(l => l.id === id); if (link) { link.visits = (link.visits || 0) + 1; saveData(); } };
+            window.copyLink = (url) => navigator.clipboard.writeText(url).then(() => showToast('📋 تم النسخ'));
+            window.openLink = (id) => { const link = data.links.find(l => l.id === id); if (link) { incrementVisit(id); window.open(link.url, '_blank'); } };
+            window.randomLink = () => {
+                if (data.links.length) { const rand = data.links[Math.floor(Math.random() * data.links.length)]; openLink(rand.id); } else showToast('لا روابط', 'error');
+            };
+            window.setFilter = (f) => { currentFilter = f; selectedLinks.clear(); document.getElementById('bulkActionsBar').classList.add('hidden'); renderAll(); };
+            window.showQR = (url) => {
+                document.getElementById('qrModal').classList.remove('hidden');
+                document.getElementById('qrcode').innerHTML = '';
+                new QRCode(document.getElementById('qrcode'), { text: url, width: 180, height: 180 });
+                document.getElementById('qrLinkText').textContent = url;
+            };
+            window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
+
+            // Bulk actions
+            window.toggleSelect = (id) => { selectedLinks.has(id) ? selectedLinks.delete(id) : selectedLinks.add(id); document.getElementById('selectedCount').textContent = selectedLinks.size; document.getElementById('bulkActionsBar').classList.toggle('hidden', selectedLinks.size === 0); };
+            window.cancelBulk = () => { selectedLinks.clear(); document.getElementById('bulkActionsBar').classList.add('hidden'); renderAll(); };
+            window.bulkDelete = () => { if (confirm('حذف المحدد؟')) { data.links = data.links.filter(l => !selectedLinks.has(l.id)); data.trash.push(...data.links.filter(l => selectedLinks.has(l.id))); saveData(); cancelBulk(); renderAll(); } };
+            window.bulkMoveCategory = () => { const cat = prompt('التصنيف الجديد:'); if (cat) { data.links.forEach(l => { if (selectedLinks.has(l.id)) l.category = cat; }); saveData(); cancelBulk(); renderAll(); } };
+
+            // Categories
+            window.openManageCategoriesModal = () => { renderCategoriesList(); document.getElementById('categoriesModalOverlay').classList.remove('hidden'); };
+            window.addCustomCategory = () => {
+                const name = document.getElementById('newCategoryName').value.trim();
+                if (name && !data.categories.includes(name)) { data.categories.push(name); saveData(); document.getElementById('newCategoryName').value = ''; renderCategoriesList(); renderAll(); }
+            };
+            function renderCategoriesList() {
+                document.getElementById('categoriesList').innerHTML = data.categories.map(c => `<div style="display:flex;justify-content:space-between;padding:8px;">${c} ${!['🎮 قيمنج','📚 دراسة','🤖 أدوات AI','🎯 مودات قيمنج'].includes(c) ? `<button class="btn btn-sm" onclick="removeCategory('${c}')">🗑️</button>` : ''}</div>`).join('');
+            }
+            window.removeCategory = (c) => {
+                if (confirm('حذف التصنيف؟')) { data.categories = data.categories.filter(x => x !== c); data.links.forEach(l => { if (l.category === c) l.category = data.categories[0]; }); saveData(); renderAll(); }
+            };
+
+            // Validity check
+            window.checkAllLinksValidity = async () => {
+                showToast('🔍 جاري الفحص...');
+                await Promise.allSettled(data.links.map(async l => { try { await fetch(l.url, { mode: 'no-cors' }); l.valid = true; } catch { l.valid = false; } }));
+                saveData();
+                showToast('✅ اكتمل الفحص');
+            };
+
+            // Accent
+            window.openAccentPicker = () => {
+                document.getElementById('accentPicker').innerHTML = ['#6c5ce7','#e74c3c','#27ae60','#f39c12','#3498db','#9b59b6','#1abc9c'].map(c => `<div class="color-option ${data.accent === c ? 'selected' : ''}" style="background:${c};" onclick="setAccent('${c}')"></div>`).join('');
+                document.getElementById('accentModal').classList.remove('hidden');
+            };
+            window.setAccent = (c) => { data.accent = c; applyAccent(c); saveData(); };
+            window.resetAccent = () => setAccent('#6c5ce7');
+
+            // Export/Import
+            window.exportData = () => {
+                const blob = new Blob([JSON.stringify({ ...data, trash: [] }, null, 2)], { type: 'application/json' });
+                const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'linkvault-backup.json'; a.click();
+            };
+            window.importDataPrompt = () => {
+                const input = document.createElement('input'); input.type = 'file'; input.accept = '.json,.html';
+                input.onchange = async (e) => {
+                    const file = e.target.files[0]; if (!file) return;
+                    const text = await file.text();
+                    if (file.name.endsWith('.html')) {
+                        const parser = new DOMParser(); const doc = parser.parseFromString(text, 'text/html');
+                        const links = [...doc.querySelectorAll('a')].map(a => ({ name: a.textContent, url: a.href, category: '📚 دراسة', tags: [], notes: '', expiry: '' }));
+                        data.links = [...links, ...data.links]; saveData(); renderAll(); showToast(`✅ أُضيف ${links.length} رابط`);
+                    } else {
+                        try {
+                            const imported = JSON.parse(text);
+                            if (imported.links) { data.links = [...imported.links, ...data.links]; data.categories = [...new Set([...data.categories, ...(imported.categories || [])])]; saveData(); renderAll(); showToast('✅ استيراد ناجح'); }
+                        } catch { showToast('ملف غير صالح', 'error'); }
+                    }
+                };
+                input.click();
+            };
+
+            function populateCategorySelect() {
+                const sel = document.getElementById('linkCategory');
+                if (sel) sel.innerHTML = data.categories.map(c => `<option>${c}</option>`).join('');
+            }
+            function showToast(msg, type = 'success') {
+                const t = document.createElement('div'); t.className = `toast toast-${type}`; t.textContent = msg;
+                document.getElementById('toastContainer').appendChild(t); setTimeout(() => t.remove(), 2500);
+            }
+            function formatDate(d) { return new Date(d).toLocaleDateString('ar-EG'); }
+            function escapeHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+            document.getElementById('searchInput').addEventListener('input', function() { searchQuery = this.value.trim(); renderLinks(); });
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.key === 'k') { e.preventDefault(); document.getElementById('searchInput').focus(); }
+                if (e.key === 'Escape') document.querySelectorAll('.modal-overlay:not(.hidden)').forEach(o => o.classList.add('hidden'));
+            });
+
+            loadData();
+            applyTheme(data.theme);
+            applyAccent(data.accent);
+            renderAll();
+        })();
+    </script>
+</body>
+</html>
